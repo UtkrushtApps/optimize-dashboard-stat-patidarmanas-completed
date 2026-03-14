@@ -37,6 +37,8 @@ CREATE TABLE activities (
     created_at TIMESTAMP
 );
 
+CREATE INDEX idx_activities_created_at_id ON activities (created_at DESC, id DESC);
+
 -- Minimal sample data
 INSERT INTO users (username, status, created_at) VALUES ('alice', 'active', NOW());
 INSERT INTO users (username, status, created_at) VALUES ('bob', 'active', NOW());
