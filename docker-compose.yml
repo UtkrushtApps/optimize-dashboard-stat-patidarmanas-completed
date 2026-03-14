@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16
+    container_name: shopboard_db
+    restart: always
+    ports:
+      - "5432:5432"
+    # Use a named volume instead of a host bind mount
+    volumes:
+      - shopboard_pgdata:/var/lib/postgresql/data
+      - ./init_database.sql:/docker-entrypoint-initdb.d/init_database.sql
+    environment:
+      POSTGRES_USER: dashboard_admin
+      POSTGRES_PASSWORD: dash_pwd123
+      POSTGRES_DB: shopboard_db
+    networks:
+      - shopboard_net
+
+  fastapi_app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    # Keep code mounted (if you need live reload)
+    volumes:
+      - ./:/root/task
+    working_dir: /root/task
+    networks:
+      - shopboard_net
+
+networks:
+  shopboard_net:
+
+volumes:
+  shopboard_pgdata:
